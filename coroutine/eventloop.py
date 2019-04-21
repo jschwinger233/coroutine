@@ -51,13 +51,15 @@ class EventLoop(asyncio.AbstractEventLoop):
         data = {'callback': callback}
         self._selector.register(fd, EVENT_WRITE, data)
 
-    def remove_reader(self, fd: IO) -> bool:
+    def remove_reader(self, fd: IO, close=False) -> bool:
         try:
             self._selector.get_key(fd)
         except KeyError:
             return False
         else:
             self._selector.unregister(fd)
+            if close:
+                self._fd_pool.release(fd)
             return True
 
     remove_writer = remove_reader
@@ -73,7 +75,7 @@ class EventLoop(asyncio.AbstractEventLoop):
 
         def callback(fd: IO, event: SelectorEvent, event_loop: EventLoop):
             fd.read()
-            event_loop.remove_reader(fd)
+            event_loop.remove_reader(fd, close=True)
             func()
 
         fd = self._fd_pool.get_timerfd(delay)

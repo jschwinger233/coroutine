@@ -1,24 +1,26 @@
 import socket as _socket
 from functools import partial
 
+from ..fd_pool import FDPool
 from ..eventloop import EventLoop
 from ..coroutine import resume_current, yield_current
 
 
 class SocketFactory:
+    fd_pool = FDPool.get_instance()
 
     def create(self, family, type):
         if family != _socket.AF_UNIX and type != _socket.SOCK_DGRAM:
             raise NotImplementedError
 
-        return UnixUdpSocket()
+        sock = self.fd_pool.get_socket(family, type)
+        return UnixUdpSocket(sock)
 
 
 class UnixUdpSocket:
 
-    def __init__(self):
-        self.sock = _socket.socket(_socket.AF_UNIX, _socket.SOCK_DGRAM)
-        self.sock.setblocking(0)
+    def __init__(self, sock):
+        self.sock = sock
 
     def __getattr__(self, attr):
         return getattr(self.sock, attr)

@@ -1,9 +1,11 @@
+import socket
 import linuxfd
-from numbers import Real
-from typing import IO
 from pysigset import (
     sigprocmask, sigaddset, SIG_BLOCK, SIG_UNBLOCK, SIGSET, NULL
 )
+
+from typing import IO
+from numbers import Real
 
 from .utils import singleton
 
@@ -45,6 +47,13 @@ class FDPool:
             self._close_on_fork.add(fd)
 
         return fd
+
+    def get_socket(self, family, type, *, close_on_fork=True) -> IO:
+        sock = socket.socket(family, type)
+        sock.setblocking(0)
+        if close_on_fork:
+            self._close_on_fork.add(sock)
+        return sock
 
     def release(self, fd: IO):
         # TODO: singledispatch

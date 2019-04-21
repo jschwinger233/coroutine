@@ -62,7 +62,7 @@ class Coroutine:
             return
 
         def callback(resume, _, __, event_loop):
-            event_loop.remove_reader(self._finish_fd)
+            event_loop.remove_reader(self._finish_fd, close=True)
             resume()
 
         event_loop = EventLoop.get_instance()
