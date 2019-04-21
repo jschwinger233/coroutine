@@ -1,8 +1,11 @@
 import asyncio
 import selectors
+from numbers import Real
 from collections import deque
 from selectors import EVENT_WRITE, EVENT_READ
-from typing import IO, Callable, Union
+
+from tracemalloc import Frame
+from typing import IO, Callable, Optional
 
 from .utils import singleton
 from .fd_pool import FDPool
@@ -64,7 +67,7 @@ class EventLoop(asyncio.AbstractEventLoop):
 
     def call_later(
         self,
-        delay: Union[int, float],
+        delay: Real,
         func: Callable[[], None],
     ):
 
@@ -79,7 +82,7 @@ class EventLoop(asyncio.AbstractEventLoop):
     def add_signal_handler(
         self,
         sig: int,
-        func: Callable[[], None],
+        func: Callable[[int, Optional[Frame]], None],
     ):
 
         def callback(fd: IO, event: SelectorEvent, event_loop: EventLoop):
