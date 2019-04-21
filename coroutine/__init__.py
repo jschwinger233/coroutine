@@ -1,4 +1,4 @@
 from .coroutine import Coroutine
-from .common import sleep, signal
+from .common import *
 
-__all__ = ['Coroutine', 'sleep', 'signal']
+__all__ = ['Coroutine', 'sleep', 'signal', 'socket']

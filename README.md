@@ -69,14 +69,6 @@ Call the handler when the process receives the signal *signalnum*.
 
 This has to be used in coroutine instead of `signal.signal`.
 
-### Pipe
-
-**coroutine.pipe(flags)**
-
-Create a pipe with *flags* set. Flags can be `O_CLOEXEC`. Return a pair of file descriptors `(r, w)` usable for reading and writing.
-
-This has to be used in coroutine instead of `os.pipe` or `os.pipe2`.
-
 ### Socket
 
 **coroutine.socket(family=AF_INET, type=SOCK_STREAM)**

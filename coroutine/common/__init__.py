@@ -1,4 +1,5 @@
 from .sleep import sleep
 from .signal import signal
+from .socket import socket
 
-__all__ = ['sleep', 'signal']
+__all__ = ['sleep', 'signal', 'socket']
